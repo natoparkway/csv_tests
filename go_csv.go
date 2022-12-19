@@ -60,9 +60,9 @@ func arraySize(arr [][]string) int {
 func main() {
     // /usr/bin/time -lp go run go_csv.go
     // ./harness.sh "go run go_csv.go"
-    records := readCsvFile("data/importer_contacts1M.csv")
+    records := readCsvFile("data/importer_contacts10M.csv")
 
-    columnar := false
+    columnar := true
     if columnar {
         columnarRecords := makeColumnar(records)
         fmt.Println("Num Columns:", len(columnarRecords))
