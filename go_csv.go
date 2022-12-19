@@ -6,7 +6,9 @@ import (
     "os"
     "fmt"
     "unsafe"
+
 )
+
 
 func readCsvFile(filePath string) [][]string {
     f, err := os.Open(filePath)
@@ -16,12 +18,32 @@ func readCsvFile(filePath string) [][]string {
     defer f.Close()
 
     csvReader := csv.NewReader(f)
+    // csvReader := csv.NewReader(charmap.ISO8859_15.NewDecoder().Reader(f))
     records, err := csvReader.ReadAll()
     if err != nil {
         log.Fatal("Unable to parse file as CSV for " + filePath, err)
     }
 
     return records
+}
+
+func makeColumnar(data [][]string) [][]string {
+    var columnarData [][]string
+    if len(data) > 0 {
+        // Add the base columns
+        numColumns := len(data[0])
+        for i := 0; i < numColumns; i++ {
+            columnarData = append(columnarData, []string {})
+        }
+
+        for _, row := range data {
+            for i, elem := range row {
+                columnarData[i] = append(columnarData[i], elem)
+            }
+        }    
+    }
+    
+    return columnarData
 }
 
 func arraySize(arr [][]string) int {
@@ -37,8 +59,18 @@ func arraySize(arr [][]string) int {
 
 func main() {
     // /usr/bin/time -lp go run go_csv.go
-    // ./harnesssh "go run go_csv.go"
-    records := readCsvFile("data/importer_contacts10M.csv")
-    fmt.Println("Array Size is", float64(arraySize(records)) / (1024 * 1024), "MBs")
+    // ./harness.sh "go run go_csv.go"
+    records := readCsvFile("data/importer_contacts1M.csv")
+
+    columnar := false
+    if columnar {
+        columnarRecords := makeColumnar(records)
+        fmt.Println("Num Columns:", len(columnarRecords))
+        fmt.Println("Num Rows:", len(columnarRecords[0]))
+    } else {
+        fmt.Println("Num Columns:", len(records[0]))
+        fmt.Println("Num Rows:", len(records))
+    }
+
 
 }

@@ -8,7 +8,8 @@ import pandas
 
 def read_csv_with_csv(fname):
 	with open(fname) as f:
-		reader = csv.DictReader(f, delimiter=',', quotechar='"')
+		reader = csv.Reader(f, delimiter=',', quotechar='"')
+		# {"fieldName": "fieldValue", "fieldName2": "fieldValue2"}
 		data = [row for row in reader]
 	return data
 
